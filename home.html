@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codeforces to Codechef rating converter</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      font-family: 'Courier New', Courier, monospace;
+      color: #ffffff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 70px;
+    }
+
+    .navbar {
+      background-color: #333333;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .navbar ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px;
+    }
+
+    .navbar ul li a:hover {
+      background-color: #ff6600;
+    }
+
+    form {
+      margin-top: 50px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .input-group input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: none;
+      width: 250px;
+      background-color: #2e2e2e;
+      color: #ffffff;
+    }
+
+    .submit-btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: none;
+      background-color: #ff6600;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #ff8533;
+    }
+    
+  </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="status.html">Status</a></li>
+        </ul>
+      </div>
+
+  <h1>Codeforces to Codechef rating converter</h1>
+  <form>
+    <div class="input-group">
+      <label for="codeforces-rating">Codeforces Rating:</label>
+      <input type="text" id="codeforces-rating" placeholder="Enter Codeforces rating" pattern="^\d+$" title="Please enter only positive integer values" required oninput="convertRating1()">
+    </div>
+    <div class="input-group">
+      <label for="codechef-rating">Codechef Rating:</label>
+      <input type="text" id="codechef-rating" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
+    </div>
+    <!-- <button type="submit" class="submit-btn">Convert</button> -->
+  </form>
+
+  <script>
+    function convertRating1() {
+      var codeforcesRating = parseInt(document.getElementById("codeforces-rating").value);
+      if (codeforcesRating < 0) {
+        codeforcesRating = 0; // Disallow negative values, set it to 0
+        document.getElementById("codeforces-rating").value = codeforcesRating;
+      }
+      var codechefRating = -4.34252*Math.pow(codeforcesRating,3)*Math.pow(10,-7) + 0.00209417*Math.pow(codeforcesRating,2) + -2.41913*codeforcesRating +2207.59; // Example conversion: multiplying by 2
+
+      document.getElementById("codechef-rating").value = Math.ceil(codechefRating);
+    }
+  </script>
+
+<h1>Codechef to Codeforces rating converter</h1>
+<form>
+  <div class="input-group">
+    <label for="codeforces-rating">Codechef Rating:</label>
+    <input type="text" id="codeforces-rating-2" placeholder="Enter Codeforces rating" pattern="^\d+$" title="Please enter only positive integer values" required oninput="convertRating2()">
+  </div>
+  <div class="input-group">
+    <label for="codechef-rating">Codeforces Rating:</label>
+    <input type="text" id="codechef-rating-2" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
+  </div>
+  <!-- <button type="submit" class="submit-btn">Convert</button> -->
+</form>
+
+<script>
+  function convertRating2() {
+    var codeforcesRating = parseInt(document.getElementById("codeforces-rating-2").value);
+    if (codeforcesRating < 0) {
+      codeforcesRating = 0; // Disallow negative values, set it to 0
+      document.getElementById("codeforces-rating-2").value = codeforcesRating;
+    }
+    var codechefRating = 1.16804*Math.pow(10,-6)*Math.pow(codeforcesRating,3) - 0.00652488*Math.pow(codeforcesRating,2) + 13.068*Math.pow(codeforcesRating,1) -7734.24; // Example conversion: multiplying by 2
+
+    document.getElementById("codechef-rating-2").value = Math.ceil(codechefRating);
+  }
+</script>
+
+</body>
+</html>

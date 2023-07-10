@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codeforces Contest Submissions</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: 'Courier New', Courier, monospace;
+      color: #333333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin-top: 40px;
+    }
+
+    .navbar {
+      background-color: #333333;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .navbar ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px;
+    }
+
+    .navbar ul li a:hover {
+      background-color: #ff6600;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+  </style>
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+
+  <h1>Codeforces Contest Submissions</h1>
+      <br>
+  <p>The Codeforces User Information web application is a tool designed to fetch and display relevant information about a Codeforces user. With this application, users can enter a Codeforces username and retrieve their maximum rating, current rating, and the most recent contest submissions. The application provides a user-friendly interface that allows users to easily access and view the desired information.</p>
+      <p>The main motive for me to make this was to quickly check if I have been hacked on some submission in rounds like CF Edu with 12 hour hack phase</p>
+
+  <form id="userInfoForm">
+    <label for="username">Codeforces Username:</label>
+    <input type="text" id="username" required>
+    <button type="submit">Get Submissions</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('userInfoForm').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent form submission
+      var username = document.getElementById('username').value;
+      getUserInformation(username);
+    });
+
+    function getUserInformation(username) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://codeforces.com/api/user.info?handles=' + username, true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.status === 'OK' && response.result.length > 0) {
+            var user = response.result[0];
+            var maxRating = user.maxRating || 0;
+            var currentRating = user.rating || 0;
+            getAllContests(username, maxRating, currentRating);
+          } else {
+            showError('User not found');
+          }
+        } else {
+          showError('Error occurred while fetching user information');
+        }
+      };
+
+      xhr.onerror = function () {
+        showError('Error occurred while fetching user information');
+      };
+
+      xhr.send();
+    }
+
+    function getAllContests(username, maxRating, currentRating) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://codeforces.com/api/contest.list', true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.status === 'OK' && response.result.length > 0) {
+            var contests = response.result;
+            var finishedContest = null;
+
+            // Find the first finished contest
+            for (var i = 0; i < contests.length; i++) {
+              var contest = contests[i];
+              if (contest.phase === 'FINISHED') {
+                finishedContest = contest;
+                break;
+              }
+            }
+
+            if (finishedContest) {
+              getUserContestSubmissions(username, finishedContest.id, maxRating, currentRating);
+            } else {
+              showError('No finished contests found');
+            }
+          } else {
+            showError('Error occurred while fetching contests');
+          }
+        } else {
+          showError('Error occurred while fetching contests');
+        }
+      };
+
+      xhr.onerror = function () {
+        showError('Error occurred while fetching contests');
+      };
+
+      xhr.send();
+    }
+
+    function getUserContestSubmissions(username, contestId, maxRating, currentRating) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://codeforces.com/api/user.status?handle=' + username + '&from=1&count=100', true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.status === 'OK') {
+            var submissions = response.result;
+            var contestSubmissions = [];
+
+            // Find the submissions of the contest
+            for (var i = 0; i < submissions.length; i++) {
+              var submission = submissions[i];
+              if (submission.contestId === contestId) {
+                contestSubmissions.push(submission);
+              }
+            }
+
+            var resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Username: ' + username + '</p>' +
+                                  '<p>Current Rating: ' + currentRating + '</p>' +
+                                  '<p>Max Rating: ' + maxRating + '</p>' +
+                                  '<p>Contest ID: ' + contestId + '</p>' +
+                                  '<p>Submissions:</p>';
+
+            if (contestSubmissions.length > 0) {
+              var submissionsList = document.createElement('ul');
+              for (var i = 0; i < contestSubmissions.length; i++) {
+                var submission = contestSubmissions[i];
+                var verdict = submission.verdict || 'In Progress';
+                var submissionItem = document.createElement('ul');
+                submissionItem.textContent = 'Problem: ' + submission.problem.name + ', Verdict: ' + verdict;
+                submissionsList.appendChild(submissionItem);
+              }
+              resultDiv.appendChild(submissionsList);
+            } else {
+              resultDiv.innerHTML += '<p>No submissions found for this contest</p>';
+            }
+          } else {
+            showError('Error occurred while fetching submissions');
+          }
+        } else {
+          showError('Error occurred while fetching submissions');
+        }
+      };
+
+      xhr.onerror = function () {
+        showError('Error occurred while fetching submissions');
+      };
+
+      xhr.send();
+    }
+
+    function showError(message) {
+      var resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>Error: ' + message + '</p>';
+    }
+  </script>
+</body>
+</html>
