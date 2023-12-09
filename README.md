@@ -1,6 +1,8 @@
 # Codeforces_Codechef_Converter
 Converts the rating in between two popular competitive programming platforms- Codeforces and Codechef
 
+The project is currently online at this URL: https://linktr.ee/re4lvansh
+
 About My Model
 Introduction
 The "Codeforces to Codechef and Codechef to Codeforces Rating Converter" project aims to provide a reliable and user-friendly solution for converting ratings between Codeforces and Codechef, two prominent competitive programming platforms. By utilizing polynomial regression, along with popular Python libraries such as scikit-learn, matplotlib, mpld3, and NumPy, this project effectively addresses the challenge of rating conversion.
