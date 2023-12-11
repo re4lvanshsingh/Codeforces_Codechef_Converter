@@ -28,7 +28,7 @@
       padding: 5px;
       background-color: #333333;
       border-radius: 5px;
-      border: 3px solid #ff6600;
+      border: 3px inset #ff6600;
     }
     h1 {
       margin-top: 70px;
@@ -71,27 +71,34 @@
   <script>
     $(document).ready(function() {
       // Function to fetch and display Codeforces contest information
-      function fetchCodeforcesContest() {
+      function fetchCodeforcesContests() {
         // Make an API request to Codeforces
         $.ajax({
           url: 'https://codeforces.com/api/contest.list',
           method: 'GET',
           dataType: 'json',
           success: function(response) {
-            // Extract the details of the next contest
-            var nextContest = response.result[0]; // Assuming the contests are sorted by time
+            // Extract the details of the most recent 4 contests
+            var contests = response.result.slice(0, 4);
 
             // Update the content of the container
-            $('.container2.codeforces-contest').html('<p>Next Contest: ' + nextContest.name + '</p>');
+            var container = $('.container2.codeforces-contest');
+            container.html('<p style="font-size:20px; color:#ffa756;"><b>Upcoming  Codeforces Contests:</b></p>');
+            
+            contests.forEach(function(contest) {
+              var startTime = new Date(contest.startTimeSeconds * 1000);
+              var formattedTime = startTime.toLocaleString();
+              container.append('<p>' + contest.name + ' - ' + formattedTime + '</p>');
+            });
           },
           error: function(error) {
-            console.log('Error fetching Codeforces contest:', error);
+            console.log('Error fetching Codeforces contests:', error);
           }
         });
       }
 
       // Call the function to fetch and display Codeforces contest information
-      fetchCodeforcesContest();
+      fetchCodeforcesContests();
     });
   </script>
 
@@ -111,7 +118,6 @@
   <div class="container">
     <h2>Codeforces</h2>
     <div class="container2 codeforces-contest">
-      <p>Next Contest</p>
     </div>
     <h2>Leetcode</h2>
     <div class="container2"><p>Next Contest</p></div>
@@ -121,5 +127,7 @@
     <h2>AtCoder</h2>
     <div class="container2"><p>Next Contest</p></div>
   </div>
+  
+  
 </body>
 </html>
