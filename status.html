@@ -66,6 +66,7 @@
           <li><a href="home.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="#">Status</a></li>
+          <li><a href="codeclock.html">Codeclock</a></li>
         </ul>
       </div>
 
@@ -214,6 +215,28 @@
       var resultDiv = document.getElementById('result');
       resultDiv.innerHTML = '<p>Error: ' + message + '</p>';
     }
+  </script>
+
+  
+  <script>
+    // JavaScript to fetch and display the next CodeChef contest
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch("https://www.codechef.com/api/contests")
+        .then(response => response.json())
+        .then(data => {
+          const codechefContestDiv = document.getElementById("codechefContest");
+          if (data && data.contest && data.contest.length > 0) {
+            const nextContest = data.contest[0];
+            const startTime = new Date(nextContest.start_time);
+            const endTime = new Date(nextContest.end_time);
+            const contestDetails = `${nextContest.name}<br>Starts: ${startTime.toLocaleString()}<br>Ends: ${endTime.toLocaleString()}`;
+            codechefContestDiv.innerHTML = contestDetails;
+          } else {
+            codechefContestDiv.innerHTML = "No upcoming contests";
+          }
+        })
+        .catch(error => console.error("Error fetching CodeChef contests:", error));
+    });
   </script>
 </body>
 </html>
