@@ -68,8 +68,8 @@
       background-color: #2e2e2e;
       color: #ffffff;
     }
-
     .submit-btn {
+      margin-top: 10px;
       padding: 10px 20px;
       font-size: 18px;
       border-radius: 5px;
@@ -82,7 +82,6 @@
     .submit-btn:hover {
       background-color: #ff8533;
     }
-    
   </style>
 </head>
 <body>
@@ -96,56 +95,221 @@
       </div>
 
   <h1>Codeforces to Codechef rating converter</h1>
-  <form>
+  <form onsubmit="predictCF()">
     <div class="input-group">
-      <label for="codeforces-rating">Codeforces Rating:</label>
-      <input type="text" id="codeforces-rating" placeholder="Enter Codeforces rating" pattern="^\d+$" title="Please enter only positive integer values" required oninput="convertRating1()">
+      <label for="input0">Codeforces Rating:</label>
+      <input type="number" min="0" id="input0" placeholder="Codeforces Max Rating" required>
+      
+      <label for="input1"></label>
+      <input type="number" min="0" id="input1" placeholder="Last Codeforces Rating" required>
+
+      <label for="input2"></label>
+      <input type="number" min="0" id="input2" placeholder="Second Last Codeforces Rating" required>
+      
+      <label for="input3"></label>
+      <input type="number" min="0" id="input3" placeholder="Third Last Codeforces Rating" required>
+
+      <label for="input4"></label>
+      <input type="number" min="0" id="input4" placeholder="Fourth Last Codeforces Rating" required>
+
+      <label for="input5"></label>
+      <input type="number" min="0" id="input5" placeholder="Fifth Last Codeforces Rating" required>
+      <br><button type="button" onclick="predictCF()" class="submit-btn">Convert</button>
     </div>
     <div class="input-group">
-      <label for="codechef-rating">Codechef Rating:</label>
-      <input type="text" id="codechef-rating" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
+      <label for="output1">Predicted Codechef Rating:</label>
+      <input type="number" min="0" id="output1" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
     </div>
     <!-- <button type="submit" class="submit-btn">Convert</button> -->
   </form>
-
   <script>
-    function convertRating1() {
-      var codeforcesRating = parseInt(document.getElementById("codeforces-rating").value);
-      if (codeforcesRating < 0) {
-        codeforcesRating = 0; // Disallow negative values, set it to 0
-        document.getElementById("codeforces-rating").value = codeforcesRating;
-      }
-      var codechefRating = -4.34252*Math.pow(codeforcesRating,3)*Math.pow(10,-7) + 0.00209417*Math.pow(codeforcesRating,2) + -2.41913*codeforcesRating +2207.59; // Example conversion: multiplying by 2
-
-      document.getElementById("codechef-rating").value = Math.ceil(codechefRating);
+   async function predictCF() {
+    // Scaling Parameters for the input values
+    const meanCF=[
+    1825.4548387096775,
+    1746.483870967742,
+    1724.2967741935483,
+    1706.7290322580645,
+    1687.8451612903225,
+    1673.1129032258063,
+    3320132.9870967744,
+    3240073.1806451613,
+    3176540.212903226,
+    3130736.206451613,
+    3096066.0935483873,
+    6850075030.780645,
+    6621022125.341935,
+    6433519863.67742,
+    6358146350.793549,
+    6273432344.7709675
+    ];
+    const stdCF=[
+    543.2954963330126,
+    520.385074682782,
+    517.4335555948994,
+    514.2658362044735,
+    531.8150655756895,
+    545.6369605454041,
+    2059428.3109835437,
+    2037699.2440900842,
+    2006880.7417028772,
+    2065441.2197304103,
+    2061161.943143167,
+    6700464578.839158,
+    6604386290.136724,
+    6451091061.063176,
+    6696797797.619845,
+    6607289433.721786
+    ];
+    const weightCF=[
+        274.22418375460137,
+        -205.5520544698708,
+        -45.58081432031249,
+        -62.044452546476826,
+        177.53208142169393,
+        -211.88277700228528,
+        353.8130129282163,
+        261.3225120036117,
+        464.60006971036586,
+        -717.2342251541672,
+        467.7974294325564,
+        -121.17488309021998,
+        -222.8771810004437,
+        -390.53114724576795,
+        474.5415221581281,
+        -174.86475939264045      
+    ]
+    var r0=parseInt(document.getElementById('input0').value);
+    var r1=parseInt(document.getElementById('input1').value);
+    var r2=parseInt(document.getElementById('input2').value);
+    var r3=parseInt(document.getElementById('input3').value);
+    var r4=parseInt(document.getElementById('input4').value);
+    var r5=parseInt(document.getElementById('input5').value);
+    var rawInput=[
+      r0, r1, r2, r3, r4, r5, r1**2, r2**2, r3**2, r4**2, r5**2, r1**3, r2**3, r3**3, r4**3, r5**3
+    ]
+    for (let index = 0; index < rawInput.length; index++) {
+        const element = rawInput[index];
+        rawInput[index]=(element-meanCF[index])/stdCF[index];
     }
+    var result=2046.8668984593405;
+    for (let index = 0; index < rawInput.length; index++) {
+        const element = rawInput[index];
+        result+=(element*weightCF[index]);
+    }
+    result=parseInt(result);
+    if (result<0) {
+      result=0;
+    }
+    document.getElementById('output1').value=result;
+}
   </script>
 
 <h1>Codechef to Codeforces rating converter</h1>
-<form>
+<form onsubmit="predictCC()">
   <div class="input-group">
-    <label for="codeforces-rating">Codechef Rating:</label>
-    <input type="text" id="codeforces-rating-2" placeholder="Enter Codeforces rating" pattern="^\d+$" title="Please enter only positive integer values" required oninput="convertRating2()">
+    <label for="input6">Codechef Rating:</label>
+    <input type="number" min="0" id="input6" placeholder="Last Codechef Rating" required>
+    
+    <label for="input7"></label>
+    <input type="number" min="0" id="input7" placeholder="Second Codechef Rating" required>
+
+    <label for="input8"></label>
+    <input type="number" min="0" id="input8" placeholder="Third Last Codechef Rating" required>
+    
+    <label for="input9"></label>
+    <input type="number" min="0" id="input9" placeholder="Fourth Last Codechef Rating" required>
+
+    <label for="input10"></label>
+    <input type="number" min="0" id="input10" placeholder="Fifth Last Codechef Rating" required>
+
+    <br><button type="button" onclick="predictCC()" class="submit-btn">Convert</button>
   </div>
   <div class="input-group">
-    <label for="codechef-rating">Codeforces Rating:</label>
-    <input type="text" id="codechef-rating-2" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
+    <label for="output2">Predicted Codeforces Rating:</label>
+    <input type="number" min="0" id="output2" placeholder="Converted Codechef rating" pattern="^(?!-)[0-9]+$" title="Please enter only positive integer values" readonly>
   </div>
   <!-- <button type="submit" class="submit-btn">Convert</button> -->
 </form>
 
 <script>
-  function convertRating2() {
-    var codeforcesRating = parseInt(document.getElementById("codeforces-rating-2").value);
-    if (codeforcesRating < 0) {
-      codeforcesRating = 0; // Disallow negative values, set it to 0
-      document.getElementById("codeforces-rating-2").value = codeforcesRating;
+  
+async function predictCC() {
+  // Scaling Parameters for the input values
+    const meanCC=[
+        2040.2967741935483,
+        2022.5354838709677,
+        2002.5645161290322,
+        1977.5451612903225,
+        1945.9548387096775,
+        4287906.561290323,
+        4211760.774193549,
+        4130190.5129032256,
+        4031035.5387096773,
+        3906888.316129032,
+        9303994848.258064,
+        9052092762.167742,
+        8796134589.5,
+        8492589222.4096775,
+        8121004116.03871
+    ];
+    const stdCC=[
+        354.26046173238416,
+        348.5727121133036,
+        346.86305836899373,
+        347.476845484749,
+        347.1842602642243,
+        1581257.6328210311,
+        1544767.7466918447,
+        1527973.762595602,
+        1514415.4910875948,
+        1508219.209160731,
+        5479764000.607299,
+        5324768022.7590475,
+        5240903843.745591,
+        5155650575.455764,
+        5126267875.614567
+    ];
+    const weightCC=[
+        335.39751922,
+        612.22257486,
+        448.08786453,
+        -452.07478843,
+        102.64775822,
+        -166.78081542,
+        -226.10882384,
+        -361.88745037,
+        -324.58029713,
+        69.44098447,
+        135.00646266,
+        -111.97764234,
+        -227.47051578,
+        993.26718112,
+        -357.57414443
+    ];
+    var v1=parseInt(document.getElementById('input6').value);
+    var v2=parseInt(document.getElementById('input7').value);
+    var v3=parseInt(document.getElementById('input8').value);
+    var v4=parseInt(document.getElementById('input9').value);
+    var v5=parseInt(document.getElementById('input10').value);
+    var rawInputCC=[
+        v1, v2, v3, v4, v5, v1**2, v2**2, v3**2, v4**2, v5**2, v1**3, v2**3, v3**3, v4**3, v5**3
+    ];
+    for (let index = 0; index < rawInputCC.length; index++) {
+        const element = rawInputCC[index];
+        rawInputCC[index]=(element-meanCC[index])/stdCC[index];
+    };
+    let result=1753.5943508554315;
+    for (let index = 0; index < rawInputCC.length; index++) {
+        const element = rawInputCC[index];
+        result+=(element*weightCC[index]);
     }
-    var codechefRating = 1.16804*Math.pow(10,-6)*Math.pow(codeforcesRating,3) - 0.00652488*Math.pow(codeforcesRating,2) + 13.068*Math.pow(codeforcesRating,1) -7734.24; // Example conversion: multiplying by 2
-
-    document.getElementById("codechef-rating-2").value = Math.ceil(codechefRating);
-  }
+    result=parseInt(result);
+    if (result<0) {
+      result=0;
+    }
+    document.getElementById('output2').value=result;
+}
 </script>
-
 </body>
 </html>
