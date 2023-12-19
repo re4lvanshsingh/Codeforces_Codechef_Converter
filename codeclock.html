@@ -66,6 +66,27 @@
     .navbar ul li a:hover {
       background-color: #ff6600;
     }
+    .submit-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: none;
+      background-color: #ff6600;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #ff8533;
+    }
+    #loadingStatus {
+      display: none;
+      text-align: center;
+      margin: 20px;
+      font-weight: bold;
+      color: black;
+    }
 
   </style>
   <script>
@@ -107,7 +128,7 @@
 
     <div class="navbar">
         <ul>
-          <li><a href="#">Home</a></li>
+          <li><a href="home.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="status.html">Status</a></li>
           <li><a href="codeclock.html">Codeclock</a></li>
@@ -116,18 +137,67 @@
 
   <h1>CodeClock!</h1>
   <div class="container">
+    
     <h2>Codeforces</h2>
     <div class="container2 codeforces-contest">
     </div>
-    <h2>Leetcode</h2>
-    <div class="container2"><p>Next Contest</p></div>
-    <h2>CodeChef</h2>
-    <div class="container2" >      
-    <p>Next Contest</p></div>
-    <h2>AtCoder</h2>
-    <div class="container2"><p>Next Contest</p></div>
+    <div id="contest-info">
+    </div>
+    <div id="loadingStatus">Loading...</div>
+    <button type="button" class="submit-btn" id="reloadButton">Refresh</button>
   </div>
-  
+  <script>
+    function showLoadingStatus() {
+      document.getElementById('loadingStatus').style.display='block'
+    }
+    function hideLoadingStatus() {
+      document.getElementById('loadingStatus').style.display='none'
+    }
+    function fetchData() {
+      showLoadingStatus();
+      fetch('http://localhost:8000/codeclock')
+      .then(response => response.json())
+      .then(data => {
+          // Get the contest information div
+          const contestInfoDiv = document.getElementById('contest-info');
+          console.log(data);
+          // Loop through the JSON data and create HTML elements
+          Object.keys(data).forEach(platform => {
+              const platformDiv = document.createElement('div');
+              platformDiv.innerHTML = `<h2>${platform}</h2>`;
+
+              const contestsDiv = document.createElement('div');
+              contestsDiv.classList.add('container2')
+              Object.keys(data[platform]).forEach(contest => {
+                  const contestData = data[platform][contest];
+                  if (contestData.name!==undefined) {
+                    const contestDiv = document.createElement('div');
+                    contestDiv.innerHTML = `<h3>${contestData.name}</h3>
+                                          <p>${contestData.info || contestData.time}</p>`;
+
+                    contestsDiv.appendChild(contestDiv);
+                  }
+              });
+
+              platformDiv.appendChild(contestsDiv);
+              contestInfoDiv.appendChild(platformDiv);
+          });
+          hideLoadingStatus();
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        hideLoadingStatus();
+      });
+
+    }
+    document.getElementById('reloadButton').addEventListener('click', function() {
+    // Reload the page
+    location.reload();
+});
+fetchData();
+</script>
+
+  </script>
   
 </body>
 </html>
