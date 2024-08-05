@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "Codeforces to CodeChef Rating Converter",
+    "version": "1.0",
+    "permissions": [
+    ],
+    "host_permissions": [
+      "https://codeforces.com/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["https://codeforces.com/profile/*"],
+        "js": ["content.js"]
+      }
+    ]
+}
