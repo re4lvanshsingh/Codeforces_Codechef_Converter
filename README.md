@@ -1,8 +1,8 @@
-# Codeforces_Codechef_Converter
+# Codeforces_Codechef_Converter (also includes chrome extension)
 
 ## Introduction
 **Converts the rating in between two popular competitive programming platforms- Codeforces and Codechef**
-The project is currently online at this URL: https://linktr.ee/re4lvansh
+The project is currently online at this URL: https://linktr.ee/cftocc
 
 #### About My Model
 The "Codeforces to Codechef and Codechef to Codeforces Rating Converter" project aims to provide a reliable and user-friendly solution for converting ratings between Codeforces and Codechef, two prominent competitive programming platforms. Over 20 models are compared , using statistical methods of root mean square error, r2 score and other metrics for comparing the fields. Initially, we start out with simple methods like Lasso Regression, ElasticNet regression and ridge regression after utilizing a heatmap to decipher related features. Then, we move on to more complicated models like Decision Tree Regressor, LGMRegressor, Isotonic Regressor and so on. Finally, we settle at the Huber Regression model, with  R2 Score: 0.91 (approximately). 
