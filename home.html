@@ -100,22 +100,22 @@
   <form onsubmit="predictCF()">
     <div class="input-group">
       <label for="input0">Codeforces Rating:</label>
-      <input type="number" min="0" id="input0" placeholder="Codeforces Max Rating" required>
+      <input type="number" min="0" id="input0" placeholder="Codeforces Max Rating" required oninput="checkMinValue(this)">
       
       <label for="input1"></label>
-      <input type="number" min="0" id="input1" placeholder="Last Codeforces Rating" required>
+      <input type="number" min="0" id="input1" placeholder="Last Codeforces Rating" required oninput="checkMinValue(this)">
 
       <label for="input2"></label>
-      <input type="number" min="0" id="input2" placeholder="Second Last Codeforces Rating" required>
+      <input type="number" min="0" id="input2" placeholder="Second Last Codeforces Rating" required oninput="checkMinValue(this)">
       
       <label for="input3"></label>
-      <input type="number" min="0" id="input3" placeholder="Third Last Codeforces Rating" required>
+      <input type="number" min="0" id="input3" placeholder="Third Last Codeforces Rating" required oninput="checkMinValue(this)">
 
       <label for="input4"></label>
-      <input type="number" min="0" id="input4" placeholder="Fourth Last Codeforces Rating" required>
+      <input type="number" min="0" id="input4" placeholder="Fourth Last Codeforces Rating" required oninput="checkMinValue(this)">
 
       <label for="input5"></label>
-      <input type="number" min="0" id="input5" placeholder="Fifth Last Codeforces Rating" required>
+      <input type="number" min="0" id="input5" placeholder="Fifth Last Codeforces Rating" required oninput="checkMinValue(this)">
       <br><button type="button" onclick="predictCF()" class="submit-btn">Convert</button>
     </div>
     <div class="input-group">
@@ -211,19 +211,19 @@
 <form onsubmit="predictCC()">
   <div class="input-group">
     <label for="input6">Codechef Rating:</label>
-    <input type="number" min="0" id="input6" placeholder="Last Codechef Rating" required>
+    <input type="number" min="0" id="input6" placeholder="Last Codechef Rating" required oninput="checkMinValue(this)">
     
     <label for="input7"></label>
-    <input type="number" min="0" id="input7" placeholder="Second Codechef Rating" required>
+    <input type="number" min="0" id="input7" placeholder="Second Codechef Rating" required oninput="checkMinValue(this)">
 
     <label for="input8"></label>
-    <input type="number" min="0" id="input8" placeholder="Third Last Codechef Rating" required>
+    <input type="number" min="0" id="input8" placeholder="Third Last Codechef Rating" required oninput="checkMinValue(this)">
     
     <label for="input9"></label>
-    <input type="number" min="0" id="input9" placeholder="Fourth Last Codechef Rating" required>
+    <input type="number" min="0" id="input9" placeholder="Fourth Last Codechef Rating" required oninput="checkMinValue(this)">
 
     <label for="input10"></label>
-    <input type="number" min="0" id="input10" placeholder="Fifth Last Codechef Rating" required>
+    <input type="number" min="0" id="input10" placeholder="Fifth Last Codechef Rating" required oninput="checkMinValue(this)">
 
     <br><button type="button" onclick="predictCC()" class="submit-btn">Convert</button>
   </div>
@@ -312,6 +312,14 @@ async function predictCC() {
     }
     document.getElementById('output2').value=result;
 }
+
+
+    function checkMinValue(input) {
+        if (input.value < 0) {
+            input.value = 0; // Reset to 0 if value is less than 0
+        }
+    }
+
 </script>
 </body>
 </html>
